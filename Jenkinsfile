@@ -7,6 +7,7 @@ pipeline {
                 git branch: 'projet-dev', url: 'https://github.com/sahar-khiari/devops-sae1.git'
             }
         }
+
         stage('Build') {
             steps {
                 sh 'mvn clean package -DskipTests'
@@ -19,14 +20,14 @@ pipeline {
             }
         }
 
-         stage('MVN SONARQUBE') {
-                    steps {
-                        // Analyse SonarQube avec Maven
-                        withSonarQubeEnv('Sonar') { // 'SonarQube' = Nom du serveur configuré dans Jenkins
-                            sh 'mvn sonar:sonar'
-                        }
-                    }
-    }
+        stage('MVN SONARQUBE') {
+            steps {
+                withSonarQubeEnv('Sonar') {
+                    sh 'mvn sonar:sonar'
+                }
+            }
+        }
+    } // <- fermeture du bloc stages
 
     post {
         success {
