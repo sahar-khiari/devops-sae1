@@ -18,6 +18,14 @@ pipeline {
                 archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
             }
         }
+
+         stage('MVN SONARQUBE') {
+                    steps {
+                        // Analyse SonarQube avec Maven
+                        withSonarQubeEnv('Sonar') { // 'SonarQube' = Nom du serveur configuré dans Jenkins
+                            sh 'mvn sonar:sonar'
+                        }
+                    }
     }
 
     post {
