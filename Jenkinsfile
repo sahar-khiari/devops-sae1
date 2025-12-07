@@ -23,7 +23,7 @@ pipeline {
         stage('MVN SONARQUBE') {
             steps {
                 withSonarQubeEnv('sq1') {
-                    sh 'mvn sonar:sonar'
+                    sh 'mvn clean verify sonar:sonar -Dsonar.token=$SONAR_AUTH_TOKEN'
                 }
             }
         }
