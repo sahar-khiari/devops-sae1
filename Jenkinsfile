@@ -5,7 +5,8 @@ pipeline {
         IMAGE_NAME = 'student-management'
     }
 
-    stages {
+    stages
+    {
 
         // 1️⃣ Checkout
         stage('Checkout') {
@@ -17,7 +18,7 @@ pipeline {
         // 2️⃣ Build Maven
         stage('Build') {
             steps {
-                sh 'mvn clean package -DskipTests'
+                sh 'mvn clean install '
             }
         }
 
@@ -28,23 +29,13 @@ pipeline {
             }
         }
 
-        // 4️⃣ SonarQube
-        stage('MVN SONARQUBE') {
-            steps {
-                withSonarQubeEnv('sq1') {
-                    sh 'mvn clean verify sonar:sonar -Dsonar.token=$SONAR_AUTH_TOKEN'
-                }
-            }
-        }
+
 
         // 5️⃣ Build Docker image
         stage('Build Docker Image') {
-            steps {
-                script {
-                    sh """
-                    docker build -t  saharkhiari4/student-management:latest .
-                    """
-                }
+            steps
+            {
+             sh 'docker build -t saharkhiari4/student-management:latest -f DockerFile .'
             }
         }
 
@@ -59,14 +50,24 @@ pipeline {
                     )]) {
                         sh """
                         echo "$PASSWORD" | docker login -u "$USERNAME" --password-stdin
-                        docker push ${USERNAME}/${IMAGE_NAME}:latest
-
+                        docker push saharkhiari4/student-management:latest
 
                         """
                     }
                 }
             }
         }
+
+        // 4️⃣ SonarQube
+                stage('MVN SONARQUBE')
+                {
+                    steps {
+                        withCredentials([string(credentialsId: 'sq1', variable: 'SONAR_TOKEN' )])
+                         {
+                            sh 'mvn sonar:sonar -Dsonar.login=$SONAR_TOKEN'
+                         }
+                    }
+                }
     }
 
     post {
