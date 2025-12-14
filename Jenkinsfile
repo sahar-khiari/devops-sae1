@@ -58,16 +58,7 @@ pipeline {
             }
         }
 
-        // 4️⃣ SonarQube
-                stage('MVN SONARQUBE')
-                {
-                    steps {
-                        withCredentials([string(credentialsId: 'sq1', variable: 'SONAR_TOKEN' )])
-                         {
-                            sh 'mvn sonar:sonar -Dsonar.login=$SONAR_TOKEN'
-                         }
-                    }
-                }
+        
     }
 
     post {
